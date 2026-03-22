@@ -14,11 +14,11 @@ import {
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import SendIcon from "@mui/icons-material/Send";
 import { ApiEndpoints } from "./constants/apiEndpoints";
+import Markdown from "react-markdown";
 
 export default function Home() {
   const [file, setFile] = useState<File | null>(null);
   const [result, setResult] = useState("");
-  const [text, setText] = useState("");
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
   const [loading, setLoading] = useState(false);
@@ -39,8 +39,7 @@ export default function Home() {
 
     const data = await res.json();
 
-    setResult(data.result || data.data);
-    setText(data.text || "");
+    setResult(data.data);
     setLoading(false);
   };
 
@@ -54,12 +53,12 @@ export default function Home() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ question, context: text }),
+      body: JSON.stringify({ question, context: result }),
     });
 
     const data = await res.json();
 
-    setAnswer(data.result);
+    setAnswer(data.data);
     setAsking(false);
   };
 
@@ -117,12 +116,11 @@ export default function Home() {
 
           <Box
             sx={{
-              whiteSpace: "pre-wrap",
               fontSize: 14,
               lineHeight: 1.6,
             }}
           >
-            {result}
+            <Markdown>{result}</Markdown>
           </Box>
         </Paper>
       )}
@@ -166,7 +164,7 @@ export default function Home() {
                   whiteSpace: "pre-wrap",
                 }}
               >
-                {answer}
+                <Markdown>{answer}</Markdown>
               </Paper>
             </Box>
           )}
